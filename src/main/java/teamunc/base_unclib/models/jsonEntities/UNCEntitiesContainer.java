@@ -23,42 +23,19 @@ import java.io.*;
  *      UNCTeamContainer reloadedB = UNCTeamContainer.loadContainer("teams", UNCTeamContainer.class);
  *      Arrays.stream(reloadedB.getEntities()).forEach(System.out::println);
  */
-public abstract class UNCEntitiesContainer<TYPE extends UNCEntitySerializable> implements Serializable {
+public abstract class UNCEntitiesContainer implements Serializable {
     private static final long serialVersionUID = -1681012206529286330L;
-    @Getter
-    protected TYPE[] entities;
-
-    public UNCEntitiesContainer() {
-
-    }
-
-    public void registerEntity(TYPE entity) {
-        TYPE[] newEntities = (TYPE[]) new UNCEntitySerializable[entities.length + 1];
-        for (int i = 0; i < entities.length; i++) {
-            newEntities[i] = entities[i];
-        }
-        newEntities[entities.length] = entity;
-        entities = newEntities;
-    }
-
-    public TYPE removeEntity(TYPE entity) {
-        TYPE[] newEntities = (TYPE[]) new UNCEntitySerializable[entities.length - 1];
-        int index = 0;
-        for (int i = 0; i < entities.length; i++) {
-            if (entities[i] != entity) {
-                newEntities[index] = entities[i];
-                index++;
-            }
-        }
-        entities = newEntities;
-        return entity;
-    }
 
     // * JSON SAVING AND LOADING * //
     private static File pluginDataFile;
     public static void init(File dataFolder) {
         pluginDataFile = dataFolder;
     }
+
+    /**
+     * the Gson instance used to serialize and deserialize the entities
+     * @return the Gson instance
+     */
     public static Gson getGson() {
         return new GsonBuilder()
                 .setPrettyPrinting()
@@ -96,7 +73,7 @@ public abstract class UNCEntitiesContainer<TYPE extends UNCEntitySerializable> i
      * at the specified path
      * @param fileName the name of the file to load the entities
      */
-    public static UNCEntitiesContainer loadContainer(String fileName) {
+    public static UNCEntitiesContainer loadContainer(String fileName) throws FileNotFoundException {
         return loadContainer(fileName, UNCEntitiesContainer.class);
     }
 
@@ -106,17 +83,9 @@ public abstract class UNCEntitiesContainer<TYPE extends UNCEntitySerializable> i
      * at the specified path
      * @param fileName the name of the file to load the entities
      */
-    public static <T extends UNCEntitiesContainer> T loadContainer(String fileName, Class<T> classOfT) {
-        try {
-            File file = new File(pluginDataFile + "/" + fileName + ".json");
-            if (!file.exists()) {
-                return null;
-            }
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            return getGson().fromJson(reader, classOfT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static <T extends UNCEntitiesContainer> T loadContainer(String fileName, Class<T> classOfT) throws FileNotFoundException {
+        File file = new File(pluginDataFile + "/" + fileName + ".json");
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        return getGson().fromJson(reader, classOfT);
     }
 }
