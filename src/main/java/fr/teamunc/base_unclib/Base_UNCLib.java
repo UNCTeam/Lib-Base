@@ -1,4 +1,4 @@
-package teamunc.base_unclib;
+package fr.teamunc.base_unclib;
 
 import org.bukkit.plugin.java.JavaPlugin;
 

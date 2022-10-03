@@ -1,6 +1,6 @@
 name: Base_UNCLib
 version: '${project.version}'
-main: teamunc.base_unclib.Base_UNCLib
+main: fr.teamunc.base_unclib.Base_UNCLib
 api-version: 1.19
 prefix: UNC-Base
 authors: [ TeamUNC ]

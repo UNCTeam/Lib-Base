@@ -1,6 +1,8 @@
-package teamunc.base_unclib.models.utils.helpers;
+package fr.teamunc.base_unclib.models.utils.helpers;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -38,5 +40,10 @@ public class Message {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) player.sendMessage(prefix + message);
         }
+    }
+
+    public void sendMessage(String message, CommandSender sender, boolean error) {
+        if (error) sender.sendMessage(prefix + ChatColor.RED + message);
+        else sender.sendMessage(prefix + ChatColor.GOLD + message);
     }
 }

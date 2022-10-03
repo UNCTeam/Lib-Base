@@ -1,4 +1,4 @@
-package teamunc.base_unclib.models.utils.helpers.gameStates;
+package fr.teamunc.base_unclib.models.utils.helpers.gameStates;
 
 import java.io.Serializable;
 

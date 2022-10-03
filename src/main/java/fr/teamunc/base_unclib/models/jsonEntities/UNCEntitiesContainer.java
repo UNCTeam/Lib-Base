@@ -1,10 +1,9 @@
-package teamunc.base_unclib.models.jsonEntities;
+package fr.teamunc.base_unclib.models.jsonEntities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.*;
+import fr.teamunc.base_unclib.models.utils.json.LocationAdapter;
 import org.bukkit.Location;
-import teamunc.base_unclib.models.utils.json.LocationAdapter;
 
 import java.io.*;
 
@@ -15,13 +14,17 @@ import java.io.*;
  * 3. Add the class A to the class B with registerEntity()
  *
  * Example with UNCTeam Lib :
- *      UNCTeam A = UNCTeam.builder("testTeam").build();
- *      UNCTeamContainer B = new UNCTeamContainer();
- *      B.registerEntity(A);
- *      B.save("teams");
- *      ***************
- *      UNCTeamContainer reloadedB = UNCTeamContainer.loadContainer("teams", UNCTeamContainer.class);
- *      Arrays.stream(reloadedB.getEntities()).forEach(System.out::println);
+ *      UNCTeam A = UNCTeam.builder("test").build();
+ *         UNCTeamContainer B = new UNCTeamContainer();
+ *         container.addTeam(A);
+ *         container.save("teams");
+ *         UNCTeamContainer reloaded_B = null;
+ *         try {
+ *             reloaded_B = UNCEntitiesContainer.loadContainer("teams", UNCTeamContainer.class);
+ *         } catch (FileNotFoundException e) {
+ *             reloaded_B = new UNCTeamContainer();
+ *         }
+ *         reloaded_B.getTeams().forEach(System.out::println);
  */
 public abstract class UNCEntitiesContainer implements Serializable {
     private static final long serialVersionUID = -1681012206529286330L;
@@ -50,7 +53,7 @@ public abstract class UNCEntitiesContainer implements Serializable {
      * save the entities in json format
      * using the Gson library
      * at the specified path
-     * @param path the path to save the entities
+     * @param fileName the name of the file
      */
     public void save(String fileName) {
         String json = getGson().toJson(this);
