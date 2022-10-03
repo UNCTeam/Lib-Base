@@ -133,17 +133,22 @@ public class UNCPhaseController extends BukkitRunnable {
     }
 
     public boolean startGame() {
-        if (tickLoops == null) return false;
-        if (tickLoops.size() == 0) return false;
+        if (tickLoops == null || tickLoops.size() == 0) {
+            Message.Get().broadcastMessageToConsole("No phase registered");
+            return false;
+        }
 
         if (tickLoops.containsKey(0)) {
             getGameActualState().setActualPhaseNumber(0);
             getGameActualState().resetTimeInPhaseAt(0);
             getActualPhaseInstance().onPhaseStart();
-            return true;
-        }
 
-        return true;
+            StartTickAction();
+            return true;
+        } else {
+            Message.Get().broadcastMessageToConsole("Phase number 0 not found");
+            return false;
+        }
     }
 
     public boolean stopGame() {
