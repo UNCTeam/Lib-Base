@@ -1,4 +1,4 @@
-package fr.teamunc.base_unclib.models.utils.json;
+package fr.teamunc.base_unclib.utils.json;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;

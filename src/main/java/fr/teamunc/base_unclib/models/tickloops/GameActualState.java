@@ -1,4 +1,4 @@
-package fr.teamunc.base_unclib.models.utils.helpers.gameStates;
+package fr.teamunc.base_unclib.models.tickloops;
 
 import fr.teamunc.base_unclib.models.jsonEntities.UNCEntitiesContainer;
 import lombok.*;

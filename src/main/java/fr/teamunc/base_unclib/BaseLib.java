@@ -4,9 +4,9 @@ import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchCom
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
-import fr.teamunc.base_unclib.models.utils.helpers.gameStates.GameActualState;
+import fr.teamunc.base_unclib.models.tickloops.GameActualState;
 import fr.teamunc.base_unclib.models.jsonEntities.UNCEntitiesContainer;
-import fr.teamunc.base_unclib.models.tickloops.UNCPhaseController;
+import fr.teamunc.base_unclib.controllers.UNCPhaseController;
 
 /**
  * Behaviors of the Base_UNCLib :

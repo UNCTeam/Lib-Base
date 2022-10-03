@@ -1,7 +1,7 @@
 package fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop;
 
 import fr.teamunc.base_unclib.BaseLib;
-import fr.teamunc.base_unclib.models.utils.helpers.Message;
+import fr.teamunc.base_unclib.utils.helpers.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -1,9 +1,11 @@
-package fr.teamunc.base_unclib.models.tickloops;
+package fr.teamunc.base_unclib.controllers;
 
 import fr.teamunc.base_unclib.BaseLib;
+import fr.teamunc.base_unclib.models.tickloops.IUNCExpression;
+import fr.teamunc.base_unclib.models.tickloops.UNCPhase;
 import org.bukkit.scheduler.BukkitRunnable;
-import fr.teamunc.base_unclib.models.utils.helpers.Message;
-import fr.teamunc.base_unclib.models.utils.helpers.gameStates.GameActualState;
+import fr.teamunc.base_unclib.utils.helpers.Message;
+import fr.teamunc.base_unclib.models.tickloops.GameActualState;
 
 import java.util.*;
 

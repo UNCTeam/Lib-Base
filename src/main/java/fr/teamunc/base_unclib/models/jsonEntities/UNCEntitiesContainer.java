@@ -2,7 +2,7 @@ package fr.teamunc.base_unclib.models.jsonEntities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import fr.teamunc.base_unclib.models.utils.json.LocationAdapter;
+import fr.teamunc.base_unclib.utils.json.LocationAdapter;
 import org.bukkit.Location;
 
 import java.io.*;

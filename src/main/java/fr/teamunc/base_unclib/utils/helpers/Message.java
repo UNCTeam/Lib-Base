@@ -1,4 +1,4 @@
-package fr.teamunc.base_unclib.models.utils.helpers;
+package fr.teamunc.base_unclib.utils.helpers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
