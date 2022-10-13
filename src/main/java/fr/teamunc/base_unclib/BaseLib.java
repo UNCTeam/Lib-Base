@@ -1,6 +1,7 @@
 package fr.teamunc.base_unclib;
 
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchCommands;
+import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchTab;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -65,6 +66,7 @@ public class BaseLib {
         PluginCommand teamCommand = plugin.getCommand("uncgame");
         if (teamCommand != null) {
             teamCommand.setExecutor(new GameLaunchCommands());
+            teamCommand.setTabCompleter(new GameLaunchTab());
         }
     }
 

@@ -6,6 +6,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class GameLaunchCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -38,5 +41,9 @@ public class GameLaunchCommands implements CommandExecutor {
         }
 
         return true;
+    }
+
+    public static ArrayList<String> getCommands() {
+        return new ArrayList<>(Arrays.asList("start", "stop", "nextphase"));
     }
 }
