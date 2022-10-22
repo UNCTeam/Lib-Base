@@ -12,6 +12,10 @@ public abstract class CommandsTab implements TabCompleter {
     @SafeVarargs
     protected final List<String> checkAllTab(String[] args, List<String>... allListsToTest) {
 
+        if (args.length > allListsToTest.length) {
+            return Collections.emptyList();
+        }
+
         String arg = args[args.length-1];
         List<String> listToTest = allListsToTest[args.length-1];
 
