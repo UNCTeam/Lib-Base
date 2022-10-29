@@ -7,7 +7,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 
 public class UNCMenuInventory extends UNCInventory {
-    public UNCMenuInventory(String title, Integer size, IUNCInventoryAction clickAction, HashMap<Integer, UNCItemMenu> fixedItems) {
-        super(title, size, clickAction, fixedItems);
+
+    public UNCMenuInventory(String title, Integer size, IUNCInventoryAction clickAction, IUNCInventoryAction closeAction,
+                            HashMap<Integer, UNCItemMenu> fixedItems) {
+        super(title, size, closeAction, fixedItems);
     }
 }

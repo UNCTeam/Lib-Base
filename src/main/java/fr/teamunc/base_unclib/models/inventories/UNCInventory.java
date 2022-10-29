@@ -18,15 +18,13 @@ public abstract class UNCInventory {
     protected String title;
     protected Inventory inventory;
     protected Integer size;
-    protected IUNCInventoryAction clickAction;
     protected IUNCInventoryAction closeAction;
     protected HashMap<Integer, UNCItemMenu> fixedItems;
 
-    public UNCInventory(String title, Integer size, IUNCInventoryAction clickAction, IUNCInventoryAction closeAction,
+    public UNCInventory(String title, Integer size, IUNCInventoryAction closeAction,
                         HashMap<Integer, UNCItemMenu> fixedItems) {
         this.title = title;
         this.size = size;
-        this.clickAction = clickAction;
         this.closeAction = closeAction;
         this.fixedItems = fixedItems;
 
