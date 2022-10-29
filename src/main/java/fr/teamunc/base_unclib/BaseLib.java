@@ -1,5 +1,6 @@
 package fr.teamunc.base_unclib;
 
+import fr.teamunc.base_unclib.controllers.UNCInventoryController;
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchCommands;
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchTab;
 import lombok.Getter;
@@ -21,6 +22,8 @@ public class BaseLib {
     private static GameActualState gameActualState;
     @Getter
     private static UNCPhaseController UNCPhaseController;
+    @Getter
+    private static UNCInventoryController UNCInventoryController;
 
     public static void init(JavaPlugin plugin) {
         BaseLib.plugin = plugin;
@@ -30,6 +33,8 @@ public class BaseLib {
 
         // init game state
         gameActualState = initGameState();
+
+        UNCInventoryController = new UNCInventoryController();
 
         // init tick action
         UNCPhaseController = new UNCPhaseController();
