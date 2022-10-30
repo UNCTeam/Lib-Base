@@ -1,19 +1,29 @@
 package fr.teamunc.base_unclib.controllers;
 
-import fr.teamunc.base_unclib.models.inventories.UNCChestInventory;
 import fr.teamunc.base_unclib.models.inventories.UNCContainerInventory;
 import fr.teamunc.base_unclib.models.inventories.UNCInventory;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class UNCInventoryController {
 
+    /** Liste des inventaires existant
+        -> Cela permet de gérer les actions quand on click dans un inventaire
+        -> Ce type d'inventaire peut s'ouvrir facilement avec la méthode openInventory de la classe UNCInventory
+     */
     @Getter
     private HashMap<String, UNCInventory> inventories;
+    /**
+     * Contient la liste des inventaires qu'on va sauvegarder
+     * -> Identifié par un UUID
+     * -> Ils peuvent contenir des items
+     * -> Ont les sauvegarde et récupère même après reboot
+     * -> L'interaction avec ces inventaires peut toujours être gérée grâce à leur title
+     */
     @Getter
     private UNCContainerInventory containerInventory;
 
@@ -25,17 +35,32 @@ public class UNCInventoryController {
         inventories.remove(inventory.getTitle());
     }
 
-    public String registerChestInventory(UNCChestInventory inventory) {
-        containerInventory.getInventories().put(inventory.getUuid(), inventory);
-        return inventory.getUuid().toString();
+    /**
+     * Enregistre un nouvel inventaire à sauvegarder
+     * @param inventory Inventaire à register
+     * @return L'UUID de l'inventaire
+     */
+    public UUID registerPersistantInventory(UNCInventory inventory) {
+        UUID uuid = UUID.randomUUID();
+        containerInventory.getInventories().put(uuid, inventory.getInventory());
+        return uuid;
     }
 
-    public void removeChestInventory(UNCChestInventory inventory) {
-        containerInventory.getInventories().remove(inventory.getUuid());
+    /**
+     * Supprime un inventaire à sauvegarder
+     * @param uuid
+     */
+    public void removePersistantInventory(UUID uuid) {
+        containerInventory.getInventories().remove(uuid);
     }
 
-    public void openChestInventory(String uuid, Player player) {
-        UNCChestInventory inventory = containerInventory.getInventories().get(UUID.fromString(uuid));
-        player.openInventory(inventory.getInventory());
+    /**
+     * Récupère un inventaire à sauvegarder et l'ouvre pour un joueur
+     * @param uuid UUID de l'inventaire
+     * @param player Joueur qui va ouvrir l'inventaire
+     */
+    public void openPersistantInventory(String uuid, Player player) {
+        Inventory inventory = containerInventory.getInventories().get(UUID.fromString(uuid));
+        player.openInventory(inventory);
     }
 }
