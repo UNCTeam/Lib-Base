@@ -1,63 +1,37 @@
 package fr.teamunc.base_unclib.utils.json;
-import com.google.gson.TypeAdapter;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 
-public class LocationAdapter extends TypeAdapter<Location> {
-
+public class LocationAdapter implements JsonSerializer<Location>, JsonDeserializer<Location> {
     @Override
-    public void write(JsonWriter out, Location value) throws IOException {
-        out.beginObject();
-        out.name("world").value(value.getWorld().getName());
-        out.name("x").value(value.getX());
-        out.name("y").value(value.getY());
-        out.name("z").value(value.getZ());
-        out.name("yaw").value(value.getYaw());
-        out.name("pitch").value(value.getPitch());
-        out.endObject();
+    public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        JsonObject object = json.getAsJsonObject();
+        String world = object.get("world").getAsString();
+        double x = object.get("x").getAsDouble();
+        double y = object.get("y").getAsDouble();
+        double z = object.get("z").getAsDouble();
+        float yaw = object.get("yaw").getAsFloat();
+        float pitch = object.get("pitch").getAsFloat();
+        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }
 
     @Override
-    public Location read(JsonReader in) throws IOException {
-        in.beginObject();
-        String world = "";
-        double x = 0;
-        double y = 0;
-        double z = 0;
-        float yaw = 0;
-        float pitch = 0;
-        while (in.hasNext()) {
-            switch (in.nextName()) {
-                case "world":
-                    world = in.nextString();
-                    break;
-                case "x":
-                    x = in.nextDouble();
-                    break;
-                case "y":
-                    y = in.nextDouble();
-                    break;
-                case "z":
-                    z = in.nextDouble();
-                    break;
-                case "yaw":
-                    yaw = in.nextInt();
-                    break;
-                case "pitch":
-                    pitch = in.nextInt();
-                    break;
-                default:
-                    in.skipValue();
-                    break;
-            }
-        }
-        in.endObject();
-        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+    public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonObject object = new JsonObject();
+        object.addProperty("world", src.getWorld().getName());
+        object.addProperty("x", src.getX());
+        object.addProperty("y", src.getY());
+        object.addProperty("z", src.getZ());
+        object.addProperty("yaw", src.getYaw());
+        object.addProperty("pitch", src.getPitch());
+        return object;
     }
 }
 

@@ -2,7 +2,9 @@ package fr.teamunc.base_unclib.models.jsonEntities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import fr.teamunc.base_unclib.models.inventories.UNCPersistantInventory;
 import fr.teamunc.base_unclib.utils.json.LocationAdapter;
+import fr.teamunc.base_unclib.utils.json.UNCPersistantInventoryAdapter;
 import org.bukkit.Location;
 
 import java.io.*;
@@ -43,6 +45,7 @@ public abstract class UNCEntitiesContainer implements Serializable {
         return new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(Location.class, new LocationAdapter())
+                .registerTypeAdapter(UNCPersistantInventory.class, new UNCPersistantInventoryAdapter())
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .disableHtmlEscaping()
                 .enableComplexMapKeySerialization()
