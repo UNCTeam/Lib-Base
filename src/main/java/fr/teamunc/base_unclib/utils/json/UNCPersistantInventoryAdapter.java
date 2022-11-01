@@ -87,6 +87,7 @@ public class UNCPersistantInventoryAdapter implements JsonSerializer<UNCPersista
         JsonObject jsonObject = json.getAsJsonObject();
         InventoryType inventoryType = InventoryType.valueOf(jsonObject.get("type").getAsString());
         String title = jsonObject.get("title").getAsString();
+        String key = jsonObject.get("key").getAsString();
         UUID uuid = UUID.fromString(jsonObject.get("uuid").getAsString());
         Integer size = jsonObject.get("size").getAsInt();
         ItemStack[] contents;
@@ -96,8 +97,10 @@ public class UNCPersistantInventoryAdapter implements JsonSerializer<UNCPersista
             throw new RuntimeException(e);
         }
         Inventory inventory = Bukkit.createInventory(null, inventoryType, title);
-        inventory.setContents(contents);
-        return new UNCPersistantInventory(title, uuid, inventory);
+        if(inventoryType.equals(InventoryType.CHEST)) {
+            inventory = Bukkit.createInventory(null, size, title);
+        }
+        return new UNCPersistantInventory(key, title, uuid, inventory);
     }
 
     @Override
@@ -107,6 +110,7 @@ public class UNCPersistantInventoryAdapter implements JsonSerializer<UNCPersista
         jsonObject.addProperty("type", src.getInventory().getType().name());
         jsonObject.addProperty("contents", itemStackArrayToBase64(src.getInventory().getContents()));
         jsonObject.addProperty("title", src.getTitle());
+        jsonObject.addProperty("key", src.getInventoryKey());
         jsonObject.addProperty("uuid", src.getUuid().toString());
         return jsonObject;
     }

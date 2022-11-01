@@ -2,6 +2,8 @@ package fr.teamunc.base_unclib.controllers;
 
 import fr.teamunc.base_unclib.models.inventories.UNCContainerInventory;
 import fr.teamunc.base_unclib.models.inventories.UNCInventory;
+import fr.teamunc.base_unclib.models.inventories.UNCPersistantInventory;
+import fr.teamunc.base_unclib.utils.helpers.Message;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,7 +18,7 @@ public class UNCInventoryController {
         -> Ce type d'inventaire peut s'ouvrir facilement avec la méthode openInventory de la classe UNCInventory
      */
     @Getter
-    private HashMap<String, UNCInventory> inventories;
+    private HashMap<String, UNCInventory> inventories = new HashMap<>();
     /**
      * Contient la liste des inventaires qu'on va sauvegarder
      * -> Identifié par un UUID
@@ -27,12 +29,30 @@ public class UNCInventoryController {
     @Getter
     private UNCContainerInventory containerInventory;
 
-    public void addInventory(UNCInventory inventory) {
-        inventories.put(inventory.getTitle(), inventory);
+    /**
+     *
+     * @param inventory
+     */
+    public void registerInventory(UNCInventory... inventory) {
+        for (UNCInventory inv : inventory) {
+            if(this.inventories.containsKey(inv.getKey())) {
+                Message.Get().broadcastMessageToConsole("L'inventaire " + inv.getKey() + " existe déjà");
+                continue;
+            }
+            this.inventories.put(inv.getKey(), inv);
+        }
+    }
+
+    public void removeInventory(String key) {
+        inventories.remove(key);
     }
 
     public void removeInventory(UNCInventory inventory) {
-        inventories.remove(inventory.getTitle());
+        inventories.remove(inventory.getKey());
+    }
+
+    public UUID registerPersistantInventory(String uncInventoryKey) {
+        return this.registerPersistantInventory(this.inventories.get(uncInventoryKey));
     }
 
     /**
@@ -42,7 +62,8 @@ public class UNCInventoryController {
      */
     public UUID registerPersistantInventory(UNCInventory inventory) {
         UUID uuid = UUID.randomUUID();
-        containerInventory.getInventories().put(uuid, inventory.getInventory());
+        containerInventory.getInventories().put(uuid, new UNCPersistantInventory(inventory.getKey(),
+                inventory.getTitle(), uuid, inventory.getInventory()));
         return uuid;
     }
 
@@ -60,7 +81,7 @@ public class UNCInventoryController {
      * @param player Joueur qui va ouvrir l'inventaire
      */
     public void openPersistantInventory(String uuid, Player player) {
-        Inventory inventory = containerInventory.getInventories().get(UUID.fromString(uuid));
+        Inventory inventory = containerInventory.getInventories().get(UUID.fromString(uuid)).getInventory();
         player.openInventory(inventory);
     }
 }

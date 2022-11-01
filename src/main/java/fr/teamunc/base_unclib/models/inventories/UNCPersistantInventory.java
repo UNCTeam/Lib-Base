@@ -9,6 +9,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class UNCPersistantInventory {
+    private String inventoryKey;
     private String title;
     private UUID uuid;
     private Inventory inventory;

@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class UNCPhaseController extends BukkitRunnable {
     private IUNCExpression finalExpression;
-    private HashMap<Integer, UNCPhase> tickLoops;
+    private final HashMap<Integer, UNCPhase> tickLoops;
     public UNCPhaseController(){
         super();
         this.tickLoops = new HashMap<>();
