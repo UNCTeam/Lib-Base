@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Getter
 public class UNCContainerInventory extends UNCEntitiesContainer {
-    private HashMap<UUID, UNCPersistantInventory> inventories;
+    private HashMap<UUID, UNCPersistantInventory> inventories = new HashMap<>();
 }

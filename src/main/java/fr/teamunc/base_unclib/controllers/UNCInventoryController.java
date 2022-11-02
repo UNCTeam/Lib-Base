@@ -13,6 +13,10 @@ import java.util.UUID;
 
 public class UNCInventoryController {
 
+    public UNCInventoryController(UNCContainerInventory containerInventory) {
+        this.containerInventory = containerInventory;
+    }
+
     /** Liste des inventaires existant
         -> Cela permet de gérer les actions quand on click dans un inventaire
         -> Ce type d'inventaire peut s'ouvrir facilement avec la méthode openInventory de la classe UNCInventory
@@ -53,6 +57,10 @@ public class UNCInventoryController {
 
     public UUID registerPersistantInventory(String uncInventoryKey) {
         return this.registerPersistantInventory(this.inventories.get(uncInventoryKey));
+    }
+
+    public UNCPersistantInventory getPersistantInventory(UUID uuid) {
+        return this.containerInventory.getInventories().get(uuid);
     }
 
     /**

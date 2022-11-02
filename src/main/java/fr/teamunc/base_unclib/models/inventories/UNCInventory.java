@@ -1,18 +1,14 @@
 package fr.teamunc.base_unclib.models.inventories;
 
-import fr.teamunc.base_unclib.models.tickloops.IUNCInventoryAction;
 import fr.teamunc.base_unclib.models.tickloops.IUNCInventoryCloseAction;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -23,8 +19,6 @@ public class UNCInventory {
     protected String key;
     /* Title of the inventory */
     protected String title;
-    /* Inventory */
-    protected Inventory inventory;
     /* Size of the inventory */
     protected Integer size;
     /* Action when the inventory is closed */
@@ -33,36 +27,44 @@ public class UNCInventory {
     protected List<UNCItemMenu> fixedItems;
     /* slots thant we want to cancel click in actionClick */
     protected List<CancelSlot> cancelSlotList;
+    protected Boolean isShiftClickCancel = false;
+    protected Boolean isDropClickCancel = false;
 
     @Builder
     public UNCInventory(String key, String title, Integer size, IUNCInventoryCloseAction closeAction,
-                        List<UNCItemMenu> fixedItems, CancelSlot... cancelSlots) {
+                        List<UNCItemMenu> fixedItems, Boolean isShiftClickCancel, Boolean isDropClickCancel,
+                        CancelSlot... cancelSlots) {
         this.key = key;
         this.title = title;
         this.size = size;
         this.closeAction = closeAction;
         this.fixedItems = fixedItems;
-
-        // Creation de l'inventaire
-        this.inventory = Bukkit.createInventory(new UNCInventoryHolder(key), size, title);
-        this.inventory.getHolder();
-
-        // Initialisation des items fixes
-        this.initializeFixedItems();
-
+        this.isShiftClickCancel = isShiftClickCancel;
+        this.isDropClickCancel = isDropClickCancel;
+        this.cancelSlotList = Arrays.asList(cancelSlots);
     }
 
     public static UNCInventoryBuilder builder(String key, String title, Integer size) {
         return new UNCInventoryBuilder().key(key).title(title).size(size);
     }
 
-    private void initializeFixedItems() {
+    private void initializeFixedItems(Inventory inventory) {
         for(UNCItemMenu itemMenu : this.fixedItems) {
             inventory.setItem(itemMenu.getSlot(), itemMenu.getItemStack());
         }
     }
 
+    public Inventory getInventory() {
+        // Creation de l'inventaire
+        Inventory inventory = Bukkit.createInventory(new UNCInventoryHolder(key), size, title);
+
+        // Initialisation des items fixes
+        this.initializeFixedItems(inventory);
+        return inventory;
+    }
+
     public void openInventory(Player player) {
-        player.openInventory(inventory);
+
+        player.openInventory(getInventory());
     }
 }

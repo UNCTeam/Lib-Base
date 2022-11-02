@@ -4,6 +4,8 @@ import fr.teamunc.base_unclib.controllers.UNCInventoryController;
 import fr.teamunc.base_unclib.minecraft.comandsExecutors.InventoriesCommands;
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchCommands;
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchTab;
+import fr.teamunc.base_unclib.minecraft.eventlisteners.InventoryListener;
+import fr.teamunc.base_unclib.models.inventories.UNCContainerInventory;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,7 +37,7 @@ public class BaseLib {
         // init game state
         gameActualState = initGameState();
 
-        UNCInventoryController = new UNCInventoryController();
+        UNCInventoryController = new UNCInventoryController(initInventoryContainer());
 
         // init tick action
         UNCPhaseController = new UNCPhaseController();
@@ -46,6 +48,10 @@ public class BaseLib {
 
         // register commands
         initCommands();
+    }
+
+    public static void initGameListener(Base_UNCLib base_uncLib) {
+        base_uncLib.getServer().getPluginManager().registerEvents(new InventoryListener(), base_uncLib);
     }
 
     public static boolean IsInit() {
@@ -79,6 +85,19 @@ public class BaseLib {
             inventoryCommand.setExecutor(new InventoriesCommands());
             inventoryCommand.setTabCompleter(new InventoriesCommands());
         }
+    }
+
+    private static UNCContainerInventory initInventoryContainer() {
+        UNCEntitiesContainer.init(plugin.getDataFolder());
+        UNCContainerInventory res;
+
+        try {
+            res = UNCEntitiesContainer.loadContainer("inventories", UNCContainerInventory.class);
+        } catch (Exception e) {
+            plugin.getLogger().info("Creating new inventory container file");
+            res = new UNCContainerInventory();
+        }
+        return res;
     }
 
 }

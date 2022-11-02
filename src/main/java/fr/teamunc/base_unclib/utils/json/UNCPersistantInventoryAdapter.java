@@ -3,6 +3,7 @@ package fr.teamunc.base_unclib.utils.json;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import fr.teamunc.base_unclib.models.inventories.UNCInventoryHolder;
 import fr.teamunc.base_unclib.models.inventories.UNCPersistantInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
@@ -98,8 +99,14 @@ public class UNCPersistantInventoryAdapter implements JsonSerializer<UNCPersista
         }
         Inventory inventory = Bukkit.createInventory(null, inventoryType, title);
         if(inventoryType.equals(InventoryType.CHEST)) {
-            inventory = Bukkit.createInventory(null, size, title);
+            UNCInventoryHolder inventoryHolder = null;
+            if(jsonObject.has("holder")) {
+                 inventoryHolder = new UNCInventoryHolder(jsonObject.get("holder").getAsString());
+            }
+            inventory = Bukkit.createInventory(inventoryHolder, size, title);
         }
+        inventory.setContents(contents);
+
         return new UNCPersistantInventory(key, title, uuid, inventory);
     }
 
@@ -112,6 +119,9 @@ public class UNCPersistantInventoryAdapter implements JsonSerializer<UNCPersista
         jsonObject.addProperty("title", src.getTitle());
         jsonObject.addProperty("key", src.getInventoryKey());
         jsonObject.addProperty("uuid", src.getUuid().toString());
+        if(src.getInventory().getHolder() instanceof UNCInventoryHolder) {
+            jsonObject.addProperty("holder", ((UNCInventoryHolder) src.getInventory().getHolder()).getKey());
+        }
         return jsonObject;
     }
 }
