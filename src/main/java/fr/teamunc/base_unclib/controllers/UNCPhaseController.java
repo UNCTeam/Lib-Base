@@ -1,51 +1,44 @@
 package fr.teamunc.base_unclib.controllers;
 
 import fr.teamunc.base_unclib.BaseLib;
-import fr.teamunc.base_unclib.models.tickloops.IUNCExpression;
 import fr.teamunc.base_unclib.models.tickloops.UNCPhase;
+import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import fr.teamunc.base_unclib.utils.helpers.Message;
 import fr.teamunc.base_unclib.models.tickloops.GameActualState;
+import org.bukkit.scheduler.BukkitTask;
 
+import javax.annotation.Nullable;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 
 /**
  * This class is the controller of the game tick loop.
  * register your tick action for each phase of the game.
  * The tick action is a function that will be called each tick.
- * register a final lambda expression to execute at the end of the game.
  */
-public class UNCPhaseController extends BukkitRunnable {
-    private IUNCExpression finalExpression;
-    private HashMap<Integer, UNCPhase> tickLoops;
-    public UNCPhaseController(){
+public class UNCPhaseController {
+    @Getter
+    private GameActualState gameActualState;
+    /**
+     * key int is the priority of the phase
+     */
+    @Getter
+    private HashMap<Integer, UNCPhase> uncPhasesRegistered;
+
+    private UNCPhaseRunnable runnable;
+
+    public UNCPhaseController(GameActualState gameActualState){
         super();
-        this.tickLoops = new HashMap<>();
-    }
+        this.gameActualState = gameActualState;
+        this.uncPhasesRegistered = new HashMap<>();
 
-    public GameActualState getGameActualState() {
-        return BaseLib.getGameActualState();
-    }
-
-    @Override
-    public void run() {
-        if (tickLoops == null) return;
-        if (tickLoops.size() == 0) return;
-
-        if (tickLoops.containsKey(getGameActualState().getActualPhaseNumber())) {
-            getActualPhaseInstance().onTick();
-        } else {
-            Message.Get().broadcastMessageToConsole("Phase number " + getGameActualState().getActualPhaseNumber() + " not found");
-            return;
-        }
-
-        // passing seconds
-        getGameActualState().passSecondInPhase();
-
-        // check if the phase is over
-        if (getGameActualState().getActualSecondsInPhase() >= getActualPhaseInstance().getMaxTick()) {
-            // phase is over
-            this.nextPhase();
+        // check if the game is started already and if the timer need to be followed
+        if (gameActualState.getActualPhaseNumber() != -1) {
+            StartTickAction();
         }
     }
 
@@ -57,54 +50,63 @@ public class UNCPhaseController extends BukkitRunnable {
      *                        the phase with the lowest number will be executed first.
      *
      *                        this phase 0 is when the game is waiting for players. (lobby)
-     * @param tickLoop the tick action class
+     * @param phase the phase class
      */
-    public void registerTickLoop(Integer phaseImportance, UNCPhase tickLoop) {
-        tickLoops.put(phaseImportance,tickLoop);
-    }
-
-    /**
-     * register a final lambda expression to execute at the end of the game.
-     * @param finalExpression
-     */
-    public void registerFinalExpression(IUNCExpression finalExpression) {
-        this.finalExpression = finalExpression;
+    public void registerTickLoop(Integer phaseImportance, UNCPhase phase) {
+        uncPhasesRegistered.put(phaseImportance,phase);
     }
 
     public void StartTickAction() {
-        if (!BaseLib.IsInit()) return;
+        if (!BaseLib.isInit()) return;
+        if (runnable != null && !runnable.isCancelled()) return;
 
-        this.runTaskTimer(
+        this.runnable = new UNCPhaseRunnable();
+        this.runnable.runTaskTimer(
                 BaseLib.getPlugin(),
-                0L,
-                20L
-        );
+                1L,
+                1L);
     }
-    public UNCPhase getActualPhaseInstance() {
-        if (tickLoops == null) return null;
-        if (tickLoops.size() == 0) return null;
 
-        if (tickLoops.containsKey(getGameActualState().getActualPhaseNumber())) {
-            return tickLoops.get(getGameActualState().getActualPhaseNumber());
+    @Nullable
+    public UNCPhase getActualPhaseInstance() {
+        if (!BaseLib.isInit()) return null;
+        if (uncPhasesRegistered.size() == 0) return null;
+
+        if (uncPhasesRegistered.containsKey(getGameActualState().getActualPhaseNumber())) {
+            return uncPhasesRegistered.get(getGameActualState().getActualPhaseNumber());
         }
         return null;
     }
-    public int getHourLeft() {
-        int secRestantes = getActualPhaseInstance().getMaxTick() - getGameActualState().getActualSecondsInPhase();
 
-        return (secRestantes - (secRestantes % 3600)) / 3600;
+    /**
+     * Calculate an approximated ending date if the actual phase is not with a DueDate System
+     * Give the DueDate if it's a DueDate phase
+     *
+     * Note : Should be used only for display/info
+     * @return a LocalDateTime
+     */
+    public LocalDateTime getEndingDate() {
+        if (!BaseLib.isInit()) return null;
+        UNCPhase actualPhase = getActualPhaseInstance();
+        if (actualPhase.isWithADueDate()) {
+            return actualPhase.getEndingDate();
+        } else {
+            double trueSecondesTimeLeft = (actualPhase.getMaxTick() - getGameActualState().getActualTicksInPhase()) * 50;
+            return LocalDateTime.now().plus(Math.round(trueSecondesTimeLeft),ChronoUnit.MILLIS).truncatedTo(ChronoUnit.SECONDS);
+        }
     }
-    public int getMinuteLeft() {
-        int secRestantes = getActualPhaseInstance().getMaxTick() - getGameActualState().getActualSecondsInPhase();
 
-        return (secRestantes % 3600 - (secRestantes % 60) )/ 60;
-    }
-    public int getSecondLeft() {
-        int secRestantes = getActualPhaseInstance().getMaxTick() - getGameActualState().getActualSecondsInPhase();
-
-        return secRestantes % 60;
+    public int getActualTicksInPhase() {
+        return getGameActualState().getActualTicksInPhase();
     }
 
+    /**
+     * switch the phase of the game
+     * trigger the ending #onPhaseEnd method of the actual phase
+     * go to the phase numbered as : actualPhaseNumber + 1
+     * or stopGame if the actual phase as isLastPhase to true
+     * resetTickInPhase to 0
+     */
     public void nextPhase() {
         getActualPhaseInstance().onPhaseEnd();
         getGameActualState().resetTimeInPhaseAt(0);
@@ -129,16 +131,32 @@ public class UNCPhaseController extends BukkitRunnable {
     }
 
     public void cancelTickAction() {
-        this.cancel();
+        if (runnable == null || runnable.isCancelled()) return;
+
+        this.runnable.cancel();
     }
 
+    public boolean isActualPhaseOver() {
+        return (getActualPhaseInstance().isWithADueDate() &&
+                (getActualPhaseInstance().getEndingDate().isBefore(LocalDateTime.now()) ||
+                        getActualPhaseInstance().getEndingDate().isEqual(LocalDateTime.now()))) ||
+                (!getActualPhaseInstance().isWithADueDate() &&
+                        (getGameActualState().getActualTicksInPhase() >= getActualPhaseInstance().getMaxTick()));
+    }
+
+    /**
+     * start the game, don't and return false if no phases are registered
+     * need a phase 0 to start
+     * start the runnable
+     * @return
+     */
     public boolean startGame() {
-        if (tickLoops == null || tickLoops.size() == 0) {
+        if (uncPhasesRegistered == null || uncPhasesRegistered.size() == 0) {
             Message.Get().broadcastMessageToConsole("No phase registered");
             return false;
         }
 
-        if (tickLoops.containsKey(0)) {
+        if (uncPhasesRegistered.containsKey(0)) {
             getGameActualState().setActualPhaseNumber(0);
             getGameActualState().resetTimeInPhaseAt(0);
             getActualPhaseInstance().onPhaseStart();
@@ -151,16 +169,27 @@ public class UNCPhaseController extends BukkitRunnable {
         }
     }
 
+    /**
+     * stop the game, ending the runnable + reseting game state (set actualPhase to -1)
+     * @return
+     */
     public boolean stopGame() {
-        if (tickLoops == null) return false;
-        if (tickLoops.size() == 0) return false;
-        if (finalExpression != null) {
-            finalExpression.execute();
-        }
+        if (!BaseLib.isInit()) return false;
+        if (uncPhasesRegistered.size() == 0) return false;
 
-        BaseLib.resetActualGameState();
+        resetActualGameState();
 
+        // stop runnable
         cancelTickAction();
         return true;
+    }
+
+    public void resetActualGameState() {
+        gameActualState = new GameActualState();
+        gameActualState.save("gameActualState");
+    }
+
+    public void save(String gameActualState) {
+        this.gameActualState.save(gameActualState);
     }
 }

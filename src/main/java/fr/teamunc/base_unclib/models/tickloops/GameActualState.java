@@ -12,25 +12,24 @@ import lombok.*;
  */
 @Getter @Setter
 public class GameActualState extends UNCEntitiesContainer {
+
+    private int actualPhaseNumber;
+
+    private int actualTicksInPhase;
+    private int actualTicksInGame;
     public GameActualState() {
         super();
         this.actualPhaseNumber = -1;
-        this.actualSecondsInGame = 0;
-        this.actualSecondsInPhase = 0;
+        this.actualTicksInPhase = 0;
+        this.actualTicksInGame = 0;
     }
-    @Getter @Setter
-    private int actualPhaseNumber;
-    @Getter
-    private int actualSecondsInPhase;
-    @Getter
-    private int actualSecondsInGame;
 
     /**
      * Increase actualSecondsInPhase and actualSecondsInGame
      */
     public void passSecondInPhase() {
-        actualSecondsInPhase++;
-        actualSecondsInGame++;
+        actualTicksInPhase++;
+        actualTicksInGame++;
     }
 
     /**
@@ -38,6 +37,6 @@ public class GameActualState extends UNCEntitiesContainer {
      * @param seconds the new value
      */
     public void resetTimeInPhaseAt(int seconds) {
-        actualSecondsInPhase = seconds;
+        actualTicksInPhase = seconds;
     }
 }

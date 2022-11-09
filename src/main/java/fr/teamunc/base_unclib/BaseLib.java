@@ -1,7 +1,6 @@
 package fr.teamunc.base_unclib;
 
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchCommands;
-import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchTab;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,8 +17,6 @@ public class BaseLib {
     @Getter
     private static JavaPlugin plugin;
     @Getter
-    private static GameActualState gameActualState;
-    @Getter
     private static UNCPhaseController UNCPhaseController;
 
     public static void init(JavaPlugin plugin) {
@@ -28,21 +25,14 @@ public class BaseLib {
         // init json entities
         UNCEntitiesContainer.init(plugin.getDataFolder());
 
-        // init game state
-        gameActualState = initGameState();
-
         // init tick action
-        UNCPhaseController = new UNCPhaseController();
-
-        if (gameActualState.getActualPhaseNumber() != -1) {
-            UNCPhaseController.StartTickAction();
-        }
+        UNCPhaseController = new UNCPhaseController(initGameState());
 
         // register commands
         initCommands();
     }
 
-    public static boolean IsInit() {
+    public static boolean isInit() {
         return plugin != null;
     }
 
@@ -57,16 +47,11 @@ public class BaseLib {
         return res;
     }
 
-    public static void resetActualGameState() {
-        gameActualState = new GameActualState();
-        gameActualState.save("gameActualState");
-    }
-
     private static void initCommands() {
         PluginCommand teamCommand = plugin.getCommand("uncgame");
         if (teamCommand != null) {
             teamCommand.setExecutor(new GameLaunchCommands());
-            teamCommand.setTabCompleter(new GameLaunchTab());
+            teamCommand.setTabCompleter(new GameLaunchCommands());
         }
     }
 
