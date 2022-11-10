@@ -3,6 +3,7 @@ package fr.teamunc.base_unclib.models.tickloops;
 import java.time.LocalDateTime;
 
 public abstract class UNCPhase {
+    public abstract String getName();
     public abstract void onTick();
     public abstract void onPhaseStart();
     public abstract void onPhaseEnd();

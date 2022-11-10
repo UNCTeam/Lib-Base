@@ -5,8 +5,10 @@ import fr.teamunc.base_unclib.models.tickloops.UNCPhase;
 import lombok.Getter;
 import fr.teamunc.base_unclib.utils.helpers.Message;
 import fr.teamunc.base_unclib.models.tickloops.GameActualState;
+import lombok.var;
 
 import javax.annotation.Nullable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -84,6 +86,10 @@ public class UNCPhaseController {
     public LocalDateTime getEndingDate() {
         if (!BaseLib.isInit()) return null;
         UNCPhase actualPhase = getActualPhaseInstance();
+
+        if (actualPhase == null)
+            return LocalDateTime.of(0,0,0,0,0);
+
         if (actualPhase.isWithADueDate()) {
             return actualPhase.getEndingDate();
         } else {
@@ -92,6 +98,21 @@ public class UNCPhaseController {
         }
     }
 
+    public Duration getDurationLeft() {
+        if (!BaseLib.isInit()) return null;
+
+        UNCPhase actualPhase = getActualPhaseInstance();
+
+        if (actualPhase == null)
+            return Duration.ofSeconds(0);
+
+        return Duration.between(LocalDateTime.now(),getEndingDate());
+    }
+
+    public int getPhaseNumber() {
+        if (!BaseLib.isInit()) return -1;
+        return getGameActualState().getActualPhaseNumber();
+    }
     public int getActualTicksInPhase() {
         return getGameActualState().getActualTicksInPhase();
     }
