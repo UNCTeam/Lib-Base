@@ -1,6 +1,8 @@
 package fr.teamunc.base_unclib;
 
+import fr.teamunc.base_unclib.controllers.UNCScoreboardController;
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchCommands;
+import fr.teamunc.base_unclib.minecraft.eventlisteners.PlayerConnexionListeners;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,11 +15,14 @@ import fr.teamunc.base_unclib.controllers.UNCPhaseController;
  * - init with the plugin
  *
  */
+
 public class BaseLib {
     @Getter
     private static JavaPlugin plugin;
     @Getter
     private static UNCPhaseController UNCPhaseController;
+    @Getter
+    private static UNCScoreboardController UNCScoreboardController;
 
     public static void init(JavaPlugin plugin) {
         BaseLib.plugin = plugin;
@@ -27,6 +32,7 @@ public class BaseLib {
 
         // init tick action
         UNCPhaseController = new UNCPhaseController(initGameState());
+        UNCScoreboardController = new UNCScoreboardController();
 
         // register commands
         initCommands();
@@ -55,4 +61,7 @@ public class BaseLib {
         }
     }
 
+    public static void initGameListeners(Base_UNCLib base_uncLib) {
+        base_uncLib.getServer().getPluginManager().registerEvents(new PlayerConnexionListeners(), base_uncLib);
+    }
 }
