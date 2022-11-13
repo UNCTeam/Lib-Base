@@ -1,5 +1,7 @@
 package fr.teamunc.base_unclib.models.tickloops;
 
+import fr.teamunc.base_unclib.BaseLib;
+
 import java.time.LocalDateTime;
 
 public abstract class UNCPhase {
@@ -34,4 +36,8 @@ public abstract class UNCPhase {
      * @return date when the phase is going to end
      */
     public abstract LocalDateTime getEndingDate();
+
+    public int getTick() {
+        return BaseLib.getUNCPhaseController().getActualTicksInPhase();
+    }
 }
