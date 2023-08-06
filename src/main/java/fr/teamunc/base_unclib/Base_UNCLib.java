@@ -13,7 +13,7 @@ public final class Base_UNCLib extends JavaPlugin {
         // Plugin shutdown logic
         if (BaseLib.isInit()) {
             BaseLib.getUNCPhaseController().cancelTickAction();
-            BaseLib.getUNCPhaseController().save("gameActualState");
+            BaseLib.getUNCPhaseController().save();
         }
     }
 }

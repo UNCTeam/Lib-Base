@@ -5,15 +5,13 @@ import fr.teamunc.base_unclib.models.scoreboards.UNCScoreboard;
 import fr.teamunc.base_unclib.models.scoreboards.UNCScoreboardLinesActualiser;
 import fr.teamunc.base_unclib.models.scoreboards.UNCScoreboardType;
 import fr.teamunc.base_unclib.utils.helpers.Message;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.*;
 
-public class UNCScoreboardController {
+public class UNCScoreboardController implements IUNCController {
 
     private final HashMap<Player, UNCScoreboard> scoreboards;
     private UNCScoreboardType scoreboardType;
@@ -61,5 +59,10 @@ public class UNCScoreboardController {
 
     public void removeAPlayerFromScoreboardActualisers(Player player) {
         scoreboards.remove(player);
+    }
+
+    @Override
+    public void save() {
+
     }
 }

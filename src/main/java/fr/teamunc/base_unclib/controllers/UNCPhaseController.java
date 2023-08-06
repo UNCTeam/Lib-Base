@@ -18,7 +18,7 @@ import java.util.*;
  * register your tick action for each phase of the game.
  * The tick action is a function that will be called each tick.
  */
-public class UNCPhaseController {
+public class UNCPhaseController implements IUNCController {
     @Getter
     private GameActualState gameActualState;
     /**
@@ -206,7 +206,7 @@ public class UNCPhaseController {
         gameActualState.save("gameActualState");
     }
 
-    public void save(String gameActualState) {
-        this.gameActualState.save(gameActualState);
+    public void save() {
+        this.gameActualState.save("gameActualState");
     }
 }
