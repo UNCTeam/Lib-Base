@@ -1,5 +1,6 @@
 package fr.teamunc.base_unclib;
 
+import fr.teamunc.base_unclib.controllers.UNCEventController;
 import fr.teamunc.base_unclib.controllers.UNCScoreboardController;
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchCommands;
 import fr.teamunc.base_unclib.minecraft.eventlisteners.PlayerConnexionListeners;
@@ -24,6 +25,11 @@ public class BaseLib {
     @Getter
     private static UNCScoreboardController UNCScoreboardController;
 
+    @Getter
+    private static UNCEventController UNCEventController;
+
+    private BaseLib() {}
+
     public static void init(JavaPlugin plugin) {
         BaseLib.plugin = plugin;
 
@@ -33,6 +39,7 @@ public class BaseLib {
         // init tick action
         UNCPhaseController = new UNCPhaseController(initGameState());
         UNCScoreboardController = new UNCScoreboardController();
+        UNCEventController = new UNCEventController();
 
         // register commands
         initCommands();
@@ -61,7 +68,7 @@ public class BaseLib {
         }
     }
 
-    public static void initGameListeners(Base_UNCLib base_uncLib) {
-        base_uncLib.getServer().getPluginManager().registerEvents(new PlayerConnexionListeners(), base_uncLib);
+    public static void initGameListeners(Base_UNCLib baseUncLib) {
+        baseUncLib.getServer().getPluginManager().registerEvents(new PlayerConnexionListeners(), baseUncLib);
     }
 }

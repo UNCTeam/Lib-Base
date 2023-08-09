@@ -26,7 +26,6 @@ public class UNCPhaseController implements IUNCController {
      */
     @Getter
     private HashMap<Integer, UNCPhase> uncPhasesRegistered;
-
     private UNCPhaseRunnable runnable;
 
     public UNCPhaseController(GameActualState gameActualState){
@@ -38,6 +37,10 @@ public class UNCPhaseController implements IUNCController {
         if (gameActualState.getActualPhaseNumber() != -1) {
             StartTickAction();
         }
+    }
+
+    public boolean isGameStarted() {
+        return gameActualState.getActualPhaseNumber() != -1;
     }
 
     /**
@@ -134,6 +137,9 @@ public class UNCPhaseController implements IUNCController {
             getGameActualState().setActualPhaseNumber(getGameActualState().getActualPhaseNumber() + 1);
             getActualPhaseInstance().onPhaseStart();
         }
+
+        // save
+        save();
     }
 
     public void setPhase(int phase, boolean resetingTickPhase, boolean executingPhaseEnd) {
@@ -145,6 +151,9 @@ public class UNCPhaseController implements IUNCController {
             getGameActualState().resetTimeInPhaseAt(0);
 
         getGameActualState().setActualPhaseNumber(phase);
+
+        // save
+        save();
     }
 
     public void cancelTickAction() {
