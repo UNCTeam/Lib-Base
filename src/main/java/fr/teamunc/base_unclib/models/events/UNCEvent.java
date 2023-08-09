@@ -19,7 +19,6 @@ public abstract class UNCEvent implements Listener {
      * @param intervalle Intervalle de temps entre chaque déclenchement de l'événement (en minutes)
      * @param startTime Date sur laquelle l'intervalle de temps se base
      * @param dureeMax Durée maximale de l'événement (en minutes)
-     * @param peutJouerAvecAutres Si l'événement peut être joué en même temps qu'un autre événement
      */
     protected UNCEvent(double probabilite, Long intervalle, Date startTime, long dureeMax) {
 
@@ -44,7 +43,7 @@ public abstract class UNCEvent implements Listener {
         this.intervalle = intervalle * 60 * 1000; // Convertir en millisecondes
     }
 
-    protected UNCEvent(Date startTime, long dureeMax, boolean peutJouerAvecAutres) {
+    protected UNCEvent(Date startTime, long dureeMax) {
 
         // clause guard pour les paramètres
         if (startTime == null) {
@@ -56,7 +55,6 @@ public abstract class UNCEvent implements Listener {
 
         this.dateDebut = startTime;
         this.dureeMax = dureeMax * 60 * 1000;
-        this.peutJouerAvecAutres = peutJouerAvecAutres;
     }
 
     /**
