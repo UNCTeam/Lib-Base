@@ -15,7 +15,7 @@ public abstract class UNCEvent implements Listener {
 
     /**
      * Constructeur pour les probabilités et la durée
-     * @param probabilite Probabilité de déclenchement de l'événement (entre 0 et 1) toutes les {@link intervalle} minutes
+     * @param probabilite Probabilité de déclenchement de l'événement (entre 0 et 1) toutes les {@link #intervalle} minutes
      * @param intervalle Intervalle de temps entre chaque déclenchement de l'événement (en minutes)
      * @param startTime Date sur laquelle l'intervalle de temps se base
      * @param dureeMax Durée maximale de l'événement (en minutes)
