@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UNCEventsCommands extends CommandsTab implements CommandExecutor {
     @Override
@@ -63,7 +64,8 @@ public class UNCEventsCommands extends CommandsTab implements CommandExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> result = checkAllTab(
                 args,
-                getCommands());
+                getCommands(),
+                BaseLib.getUNCEventController().getRegistredEvents().stream().map(e -> e.getClass().getSimpleName()).collect(Collectors.toList()));
 
         //sort the list
         Collections.sort(result);
