@@ -2,6 +2,7 @@ package fr.teamunc.base_unclib;
 
 import fr.teamunc.base_unclib.controllers.UNCEventController;
 import fr.teamunc.base_unclib.controllers.UNCScoreboardController;
+import fr.teamunc.base_unclib.minecraft.commandsExecutors.events.UNCEventsCommands;
 import fr.teamunc.base_unclib.minecraft.commandsExecutors.gameLoop.GameLaunchCommands;
 import fr.teamunc.base_unclib.minecraft.eventlisteners.PlayerConnexionListeners;
 import lombok.Getter;
@@ -65,6 +66,12 @@ public class BaseLib {
         if (teamCommand != null) {
             teamCommand.setExecutor(new GameLaunchCommands());
             teamCommand.setTabCompleter(new GameLaunchCommands());
+        }
+
+        PluginCommand eventCommand = plugin.getCommand("uncevent");
+        if (eventCommand != null) {
+            eventCommand.setExecutor(new UNCEventsCommands());
+            eventCommand.setTabCompleter(new UNCEventsCommands());
         }
     }
 
