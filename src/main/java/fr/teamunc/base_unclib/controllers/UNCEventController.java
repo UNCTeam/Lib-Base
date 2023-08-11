@@ -7,13 +7,14 @@ import fr.teamunc.base_unclib.models.jsonEntities.UNCEntitiesContainer;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class UNCEventController implements IUNCController {
 
     private UNCEventRunnable runnable;
     @Getter
-    private List<UNCEvent> registredEvents;
+    private final List<Class<UNCEvent>> registredEvents;
 
     private UNCEventContainer activeEventContainer;
     private static final String EVENT_CONTAINER_NAME = "activeEvents";
@@ -38,15 +39,11 @@ public class UNCEventController implements IUNCController {
     }
 
     public void startEvent(UNCEvent eventToStart) {
-        eventToStart.startEvent();
-        activeEventContainer.getEvents().add(eventToStart);
-        save();
+
     }
 
     public void stopEvent(UNCEvent eventToStop) {
-        eventToStop.stopEvent();
-        activeEventContainer.getEvents().remove(eventToStop);
-        save();
+
     }
 
     public List<UNCEvent> getActiveEvents() {
@@ -55,22 +52,15 @@ public class UNCEventController implements IUNCController {
 
     /**
      * Register an event to the controller
-     * @param event the event to register
+     * @param event the event class to instantiate
+     * @param executionDate the exact date when the event need to be start automatically
+     * @apiNote note that if the event start date is in the past, the event will be start immediately after the registration and the event name (class name) will be saved as disabled in the json file
      */
-    public void registerEvent(UNCEvent event) {
+    public void registerEvent(Class<UNCEvent> event, Date executionDate) {
         registredEvents.add(event);
     }
 
     public void save() {
         activeEventContainer.save(EVENT_CONTAINER_NAME);
-    }
-
-    public UNCEvent getEvent(String arg) {
-        for (UNCEvent event : registredEvents) {
-            if (event.getClass().getSimpleName().equals(arg)) {
-                return event;
-            }
-        }
-        return null;
     }
 }

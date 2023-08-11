@@ -138,16 +138,14 @@ public abstract class UNCEvent implements Listener {
             // si l'événement est fixe, on vérifie si la date est après la date de début
             return date.after(dateDebut);
         } else {
-            // Calculer le temps écoulé depuis dateDebut en millisecondes
+            // Calculer le temps écoulé depuis dateDebut en millisecondes et le diviser par l'intervalle en millisecondes
             long elapsedMillis = date.getTime() - dateDebut.getTime();
+            long elapsedIntervals = elapsedMillis / intervalle;
 
-            // Vérifier si elapsedMillis est un multiple de l'intervalle
-            double ratio = (double) elapsedMillis / intervalle;
-
-            // Si ratio est proche d'un nombre entier, cela signifie que c'est le bon moment
-            // pour considérer le déclenchement de l'événement
-            if (Math.abs(ratio - Math.round(ratio)) < 0.000001) {  // Pour gérer des imprécisions numériques
-                return Math.random() < probabilite;
+            // Vérifier si elapsedIntervals est un entier pour savoir si on est à un intervalle
+            if (elapsedIntervals > 0 && elapsedIntervals * intervalle == elapsedMillis) {
+                // Calculer la probabilité de déclenchement de l'événement
+                return Math.random() <= probabilite;
             }
         }
         return false;

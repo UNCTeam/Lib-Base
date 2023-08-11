@@ -26,22 +26,6 @@ public class UNCEventRunnable extends BukkitRunnable {
         Date now = new Date();
         UNCEventController eventController = BaseLib.getUNCEventController();
 
-        for (var event : eventController.getActiveEvents()) {
-            if (event.isItTimeToEndEvent(now)) {
-                eventController.stopEvent(event);
-            }
-        }
 
-        // do action onTick
-        for (var event : eventController.getActiveEvents()) {
-            event.tick();
-        }
-
-        // start events ?
-        for (var event : eventController.getRegistredEvents()) {
-            if (event.isItTimeToStartEvent(now)) {
-                eventController.startEvent(event);
-            }
-        }
     }
 }
